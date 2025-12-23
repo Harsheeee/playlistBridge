@@ -23,7 +23,7 @@ app = FastAPI(title=settings.PROJECT_NAME)
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key="a very random_secret_key",
+    secret_key=settings.SECRET_KEY,
     same_site="lax",
     https_only=False,  # set True in production
 )

@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     # JWT
     JWT_SECRET: str
     JWT_ALGORITHM: str = "HS256"
+    SECRET_KEY : str
 
     # Google OAuth
     GOOGLE_CLIENT_ID: str
