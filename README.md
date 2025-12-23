@@ -134,7 +134,7 @@ Backend (Python):
 - httpx — async HTTP client
 - pydantic — data validation (via BaseModel)
 
-Frontend (inside `frontend/`):
+Frontend:
 
 - vite — bundler / dev server
 - react — UI library
