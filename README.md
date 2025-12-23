@@ -127,8 +127,6 @@ Backend (Python):
 
 - fastapi — web framework
 - uvicorn — ASGI server
-- python-dotenv — env file support
-- pydantic_settings — configuration
 - sqlalchemy (async) — ORM / DB
 - authlib — OAuth integration
 - python-jose — JWT encode/decode
@@ -143,9 +141,6 @@ Frontend (inside `frontend/`):
 - typescript — type system
 - tailwindcss — styles
 - axios — HTTP client
-- @tanstack/react-query — async data fetching / caching
-- react-router-dom — routing
-- eslint / @eslint/js — linting
 
 Third-party APIs: Spotify Web API, YouTube Data API v3, Google OpenID Connect
 
