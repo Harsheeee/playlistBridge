@@ -14,8 +14,6 @@
 - [Database](#database)
 - [Libraries & Tools Used](#libraries--tools-used)
 - [Run & Development](#run--development)
-- [Examples](#examples)
-- [Notes & Caveats](#notes--caveats)
 
 ---
 
@@ -186,42 +184,5 @@ npm run dev
 
 - Configure Google OAuth credentials to include `http://127.0.0.1:8000/api/auth/google/callback` and `http://127.0.0.1:8000/api/oauth/youtube/callback` as authorized redirect URIs.
 - Configure Spotify redirect `http://127.0.0.1:8000/api/oauth/spotify/callback` in your Spotify app settings.
-
----
-
-## Examples
-
-1) Sign in (manual flows via browser):
-- Visit `/api/auth/google/login` in a browser, sign in, the app will set an `access_token` cookie and redirect to the frontend.
-
-2) Connect Spotify / YouTube:
-- Visit `/api/oauth/spotify/login` or `/api/oauth/youtube/login` while logged in (cookie present)
-
-3) Transfer Spotify -> YouTube (curl):
-
-```bash
-curl -X POST "http://127.0.0.1:8000/api/transfer/spotify-to-youtube/{spotify_playlist_id}" \
-  -H "Content-Type: application/json" \
-  --cookie "access_token=<JWT_FROM_GOOGLE_LOGIN>" \
-  -d '{"title":"My Transferred Playlist"}'
-```
-
-4) Transfer YouTube -> Spotify (curl):
-
-```bash
-curl -X POST "http://127.0.0.1:8000/api/transfer/youtube-to-spotify/{youtube_playlist_id}" \
-  -H "Content-Type: application/json" \
-  --cookie "access_token=<JWT_FROM_GOOGLE_LOGIN>" \
-  -d '{"title":"YouTube -> Spotify"}'
-```
-
----
-
-## Notes & Caveats
-
-- The project stores OAuth tokens in the DB. Refresh tokens are required to refresh access tokens; YouTube requests `access_type=offline` to obtain a refresh token.
-- The YouTube -> Spotify transfer relies on heuristic title parsing and string normalization; matches are not guaranteed.
-- The Spotify -> YouTube transfer searches YouTube for the best match (multiple query attempts), so accuracy depends on search results.
-- In production, set secure cookies and `https_only=True` for sessions, and use proper secrets management for `JWT_SECRET` and provider credentials.
 
 ---
