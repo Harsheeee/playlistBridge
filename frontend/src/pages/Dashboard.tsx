@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 type Playlist = {
   id: string;
   name: string;
-  tracks: { total: number };
+  tracks?: { total: number };
+  items?: { total: number };
 };
 type YouTubePlaylist = {
   id: string;
@@ -340,7 +341,7 @@ export default function Dashboard() {
                       {p.name}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {p.tracks.total} {p.tracks.total === 1 ? "track" : "tracks"}
+                      {p.tracks?.total ?? p.items?.total ?? 0} {((p.tracks?.total ?? p.items?.total) === 1) ? "track" : "tracks"}
                     </p>
                   </div>
 

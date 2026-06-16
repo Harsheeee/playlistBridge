@@ -17,25 +17,51 @@ async def get_db():
     async with AsyncSessionLocal() as session:
         yield session
 
+import difflib
+
 def spotify_search(sp: spotipy.Spotify, track: str, artist: str):
     q = f"{track} {artist}"
     res = sp.search(q=q, type="track", limit=10)
     items = res["tracks"]["items"]
+    
+    best_uri = None
+    best_ratio = 0.0
+
     for item in items:
-        #print(f"Spotify Search Result: '{item['name']}'")
         normal_title = normalize_title(item["name"])
         normal_track = normalize_title(track)
+        
+        # Exact match
         if normal_title == normal_track:
             return item["uri"]
+            
+        # Word overlap
+        target_words = set(normal_track.split())
+        title_words = set(normal_title.split())
+        if not target_words:
+            continue
+            
+        ratio = len(target_words.intersection(title_words)) / len(target_words)
+        if ratio > best_ratio:
+            best_ratio = ratio
+            best_uri = item["uri"]
+            
+    # If the best fuzzy match is at least 50% similar, accept it
+    if best_ratio > 0.5:
+        return best_uri
+        
+    return None
 
 
 def create_spotify_playlist(access_token: str, user_id: str, name: str):
     sp = spotipy.Spotify(auth=access_token)
-    playlist = sp.user_playlist_create(
-        user=user_id,
-        name=name,
-        public=False,
-    )
+    data = {
+        "name": name,
+        "public": False,
+        "collaborative": False,
+        "description": ""
+    }
+    playlist = sp._post("me/playlists", payload=data)
     return playlist["id"]
 
 class TransferRequest(BaseModel):

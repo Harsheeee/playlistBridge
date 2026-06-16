@@ -26,7 +26,7 @@ async def get_spotify_tracks(access_token: str, playlist_id: str):
 
     while results:
         for item in results["items"]:
-            track = item["track"]
+            track = item.get("track") or item.get("item")
             if not track:
                 continue
             tracks.append({
@@ -36,11 +36,11 @@ async def get_spotify_tracks(access_token: str, playlist_id: str):
         results = sp.next(results) if results["next"] else None
 
     return tracks
+import difflib
+
 async def youtube_search(access_token: str, title: str, artist: str):
     queries = [
-        f"{title} {artist} official audio",
-        f"{title} {artist}",
-        f"{title}",
+        f"{title} {artist}"
     ]
 
     async with httpx.AsyncClient() as client:
@@ -51,13 +51,41 @@ async def youtube_search(access_token: str, title: str, artist: str):
                     "part": "snippet",
                     "q": q,
                     "type": "video",
-                    "maxResults": 1,
+                    "maxResults": 5,
                 },
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             data = r.json()
-            if data.get("items"):
-                return data["items"][0]["id"]["videoId"]
+            items = data.get("items", [])
+            
+            if not items:
+                continue
+                
+            best_id = None
+            best_ratio = 0.0
+            
+            target_str = f"{title} {artist}".lower()
+            
+            for item in items:
+                yt_title = item["snippet"]["title"].lower()
+                
+                # Check word overlap instead of strict sequence to handle "Artist - Title" vs "Title Artist"
+                target_words = set(target_str.split())
+                yt_words = set(yt_title.split())
+                if not target_words:
+                    continue
+                
+                overlap = len(target_words.intersection(yt_words)) / len(target_words)
+                
+                if overlap > best_ratio:
+                    best_ratio = overlap
+                    best_id = item["id"]["videoId"]
+                    
+            if best_ratio > 0.5:
+                return best_id
+            elif items:
+                # Fallback to the first result if YouTube is reasonably confident but strings don't match well
+                return items[0]["id"]["videoId"]
 
     return None
 
