@@ -30,7 +30,8 @@ app.add_middleware(
 )
 
 # Support both 127.0.0.1 and localhost during development so cookies work
-frontend_origins = {settings.FRONTEND_URL, "http://127.0.0.1:5173", "http://localhost:5173"}
+frontend_url = settings.FRONTEND_URL.rstrip("/") if settings.FRONTEND_URL else ""
+frontend_origins = {frontend_url, "https://playlist-bridge-virid.vercel.app", "http://127.0.0.1:5173", "http://localhost:5173"}
 
 app.add_middleware(
     CORSMiddleware,
