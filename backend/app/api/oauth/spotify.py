@@ -34,7 +34,7 @@ async def get_db():
 
 @router.get("/login")
 async def spotify_login(request: Request):
-    redirect_uri = "http://127.0.0.1:8000/api/oauth/spotify/callback"
+    redirect_uri = f"{settings.BACKEND_URL}/api/oauth/spotify/callback"
     return await oauth.spotify.authorize_redirect(request, redirect_uri, show_dialog=True)
 
 @router.get("/callback")

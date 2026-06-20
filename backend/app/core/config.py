@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     PROJECT_NAME: str = "PlaylistBridge"
     FRONTEND_URL: str = "http://127.0.0.1:5173"
+    BACKEND_URL: str = "https://playlistbridge-backend-4wga.onrender.com"
 
     # Database
     DATABASE_URL: str

@@ -30,7 +30,7 @@ async def get_db():
 
 @router.get("/login")
 async def google_login(request: Request):
-    redirect_uri = "http://127.0.0.1:8000/api/auth/google/callback"
+    redirect_uri = f"{settings.BACKEND_URL}/api/auth/google/callback"
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
