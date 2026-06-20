@@ -68,8 +68,8 @@ async def google_callback(
     key="access_token",
     value=jwt_token,
     httponly=True,
-    samesite="lax",
-    secure=False,
+    samesite="none",
+    secure=True,
     path="/",
     )
     return response

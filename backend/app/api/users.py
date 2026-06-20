@@ -51,5 +51,5 @@ async def me(
 
 @router.post("/logout")
 def logout(response: Response):
-    response.delete_cookie(key="access_token", path="/")
+    response.delete_cookie(key="access_token", path="/", samesite="none", secure=True)
     return {"detail": "logged out"}
