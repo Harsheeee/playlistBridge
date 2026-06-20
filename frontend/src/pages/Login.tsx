@@ -1,6 +1,8 @@
+const BACKEND_URL = import.meta.env.PROD ? "https://playlistbridge-backend-4wga.onrender.com" : "http://127.0.0.1:8000";
+
 export default function Login() {
   const login = () => {
-    window.location.href = "http://127.0.0.1:8000/api/auth/google/login";
+    window.location.href = `${BACKEND_URL}/api/auth/google/login`;
   };
 
   return (
