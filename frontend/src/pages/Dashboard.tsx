@@ -18,6 +18,8 @@ type CurrentUser = {
   picture?: string | null;
 };
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000";
+
 export default function Dashboard() {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,17 +34,17 @@ export default function Dashboard() {
   const [profileOpen, setProfileOpen] = useState(false);
 
   const connectSpotify = () => {
-    window.location.href = "http://127.0.0.1:8000/api/oauth/spotify/login";
+    window.location.href = `${BACKEND_URL}/api/oauth/spotify/login`;
   };
 
   const connectYouTube = () => {
-    window.location.href = "http://127.0.0.1:8000/api/oauth/youtube/login";
+    window.location.href = `${BACKEND_URL}/api/oauth/youtube/login`;
   };
 
   const fetchPlaylists = async () => {
     setLoading(true);
     const res = await fetch(
-      "http://127.0.0.1:8000/api/spotify/playlists",
+      `${BACKEND_URL}/api/spotify/playlists`,
       { credentials: "include" }
     );
     if (res.ok) {
@@ -84,7 +86,7 @@ export default function Dashboard() {
     setMessage("Transferring playlist (this happens in the background)...");
     setMessageType("info");
     const res = await fetch(
-      `http://127.0.0.1:8000/api/transfer/spotify-to-youtube/${playlistId}`,
+      `${BACKEND_URL}/api/transfer/spotify-to-youtube/${playlistId}`,
       {
         method: "POST",
         credentials: "include",
@@ -104,7 +106,7 @@ export default function Dashboard() {
     setMessage("Transferring YouTube playlist (this happens in the background)...");
     setMessageType("info");
     const res = await fetch(
-      `http://127.0.0.1:8000/api/transfer/youtube-to-spotify/${playlistId}`,
+      `${BACKEND_URL}/api/transfer/youtube-to-spotify/${playlistId}`,
       {
         method: "POST",
         credentials: "include",
@@ -126,7 +128,7 @@ export default function Dashboard() {
   const fetchYouTubePlaylists = async () => {
     setYtLoading(true);
     const res = await fetch(
-      "http://127.0.0.1:8000/api/youtube/playlists",
+      `${BACKEND_URL}/api/youtube/playlists`,
       { credentials: "include" }
     );
     if (res.ok) {
@@ -137,7 +139,7 @@ export default function Dashboard() {
   };
 
   const logout = async () => {
-    await fetch("http://127.0.0.1:8000/api/users/logout", {
+    await fetch(`${BACKEND_URL}/api/users/logout`, {
       method: "POST",
       credentials: "include",
     });
@@ -145,7 +147,7 @@ export default function Dashboard() {
   };
 
   const ensureAuthenticated = async () => {
-    const res = await fetch("http://127.0.0.1:8000/api/users/me", {
+    const res = await fetch(`${BACKEND_URL}/api/users/me`, {
       credentials: "include",
     });
     if (!res.ok) {
