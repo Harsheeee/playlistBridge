@@ -23,7 +23,9 @@ async def get_playlists(
         OAuthAccount.provider == "spotify",
     )
     result = await db.execute(stmt)
-    account = result.scalar_one()
+    account = result.scalar_one_or_none()
+    if not account:
+        return []
 
     account = await ensure_token_valid(db, account)
 

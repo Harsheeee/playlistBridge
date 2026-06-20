@@ -52,8 +52,36 @@ export default function Dashboard() {
     setLoading(false);
   };
 
+  const pollTransferStatus = async (taskId: string) => {
+    while (true) {
+      const res = await fetch(`${BACKEND_URL}/api/transfer/status/${taskId}`, {
+        credentials: "include",
+      });
+      if (!res.ok) {
+        setMessageType("info");
+        setMessage("Error checking transfer status");
+        return;
+      }
+      const data = await res.json();
+      if (data.task_status === "SUCCESS") {
+        setMessageType("success");
+        const result = data.task_result;
+        setMessage(
+          `Transfer complete: ${result?.matched}/${result?.total} tracks matched`
+        );
+        return;
+      } else if (data.task_status === "FAILURE") {
+        setMessageType("info");
+        setMessage("Transfer failed.");
+        return;
+      }
+      // Wait for 2 seconds before polling again
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  };
+
   const transfer = async (playlistId: string) => {
-    setMessage("Transferring playlist...");
+    setMessage("Transferring playlist (this happens in the background)...");
     setMessageType("info");
     const res = await fetch(
       `http://127.0.0.1:8000/api/transfer/spotify-to-youtube/${playlistId}`,
@@ -65,14 +93,15 @@ export default function Dashboard() {
       }
     );
     const data = await res.json();
-    setMessageType("success");
-    setMessage(
-      `Transfer complete: ${data.matched}/${data.total} tracks matched`
-    );
+    if (data.task_id) {
+        pollTransferStatus(data.task_id);
+    } else {
+        setMessage("Failed to start transfer.");
+    }
   };
 
   const transferYouTubeToSpotify = async (playlistId: string) => {
-    setMessage("Transferring YouTube playlist...");
+    setMessage("Transferring YouTube playlist (this happens in the background)...");
     setMessageType("info");
     const res = await fetch(
       `http://127.0.0.1:8000/api/transfer/youtube-to-spotify/${playlistId}`,
@@ -84,10 +113,11 @@ export default function Dashboard() {
       }
     );
     const data = await res.json();
-    setMessageType("success");
-    setMessage(
-      `Transfer complete: ${data.matched}/${data.total} tracks matched`
-    );
+    if (data.task_id) {
+        pollTransferStatus(data.task_id);
+    } else {
+        setMessage("Failed to start transfer.");
+    }
   };
 
   const [ytPlaylists, setYtPlaylists] = useState<YouTubePlaylist[]>([]);

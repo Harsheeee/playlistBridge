@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     YOUTUBE_CLIENT_ID: str
     YOUTUBE_CLIENT_SECRET: str
 
+    CELERY_BROKER_URL: str = "amqp://guest:guest@localhost:5672//"
+    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
+
     class Config:
         env_file = ".env"
         extra = "forbid"

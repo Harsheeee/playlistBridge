@@ -11,6 +11,7 @@ from app.api.spotify.playlists import router as spotify_playlists_router
 from app.api.oauth.youtube import router as youtube_router
 from app.api.transfer.spotify_to_youtube import router as transfer_router
 from app.api.transfer.youtube_to_spotify import router as yt_spotify_router
+from app.api.transfer.status import router as status_router
 from app.api.youtube.playlists import router as youtube_playlists_router
 
 
@@ -71,6 +72,12 @@ app.include_router(
 
 app.include_router(
     yt_spotify_router,
+    prefix="/api/transfer",
+    tags=["transfer"],
+)
+
+app.include_router(
+    status_router,
     prefix="/api/transfer",
     tags=["transfer"],
 )

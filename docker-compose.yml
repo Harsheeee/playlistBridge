@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: playlist_user
+      POSTGRES_PASSWORD: playlist_password
+      POSTGRES_DB: playlistbridge
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Management UI
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=postgresql://playlist_user:playlist_password@db:5432/playlistbridge
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - FRONTEND_URL=http://127.0.0.1:5173
+      # You can copy the rest of your .env file into a .env file next to docker-compose.yml 
+      # and add an `env_file: - .env` directive, or just set them here.
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: celery -A app.core.celery_app.celery_app worker --loglevel=info
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=postgresql://playlist_user:playlist_password@db:5432/playlistbridge
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - FRONTEND_URL=http://127.0.0.1:5173
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+
+volumes:
+  postgres_data:

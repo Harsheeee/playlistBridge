@@ -1,3 +1,16 @@
 fastapi
 uvicorn[standard]
 python-dotenv
+pydantic-settings
+sqlalchemy
+itsdangerous
+authlib
+httpx
+python-jose[cryptography]
+aiosqlite
+psycopg2-binary
+asyncpg
+spotipy
+celery
+redis
+pika

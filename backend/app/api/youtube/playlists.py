@@ -31,7 +31,7 @@ async def get_youtube_playlists(
     yt_acc = result.scalar_one_or_none()
 
     if not yt_acc:
-        raise HTTPException(400, "YouTube not connected")
+        return []
 
     yt_acc = await ensure_token_valid(db, yt_acc)
 
