@@ -18,7 +18,7 @@ type CurrentUser = {
   picture?: string | null;
 };
 
-const BACKEND_URL = import.meta.env.PROD ? "https://playlistbridge-backend-4wga.onrender.com" : "http://127.0.0.1:8000";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://playlistbridge-backend-4wga.onrender.com";
 
 export default function Dashboard() {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
