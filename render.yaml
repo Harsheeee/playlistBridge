@@ -1,9 +1,10 @@
-services:
+databases:
   # 1. PostgreSQL Database
-  - type: pgo
-    name: playlistbridge-db
+  - name: playlistbridge-db
     plan: free
-    postgresMajorVersion: 15
+    postgresMajorVersion: "15"
+
+services:
 
   # 2. Redis (Used for Celery Broker & Backend)
   - type: redis
