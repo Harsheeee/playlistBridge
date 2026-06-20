@@ -13,6 +13,7 @@ from app.api.transfer.spotify_to_youtube import router as transfer_router
 from app.api.transfer.youtube_to_spotify import router as yt_spotify_router
 from app.api.transfer.status import router as status_router
 from app.api.youtube.playlists import router as youtube_playlists_router
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 
 
@@ -21,6 +22,8 @@ from app.api.youtube.playlists import router as youtube_playlists_router
 
 
 app = FastAPI(title=settings.PROJECT_NAME)
+
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
 app.add_middleware(
     SessionMiddleware,

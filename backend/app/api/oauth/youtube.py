@@ -28,7 +28,7 @@ async def get_db():
 
 @router.get("/login")
 async def youtube_login(request: Request):
-    redirect_uri = f"{settings.FRONTEND_URL}/api/oauth/youtube/callback"
+    redirect_uri = str(request.url_for('youtube_callback'))
     return await oauth.youtube.authorize_redirect(request, redirect_uri, prompt="consent", access_type="offline")
 
 @router.get("/callback")
